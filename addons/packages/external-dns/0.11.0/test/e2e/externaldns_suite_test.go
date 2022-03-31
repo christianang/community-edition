@@ -5,14 +5,13 @@
 package e2e_test
 
 import (
-	"fmt"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/utils"
+	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/v2/utils"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
@@ -68,11 +67,11 @@ var _ = BeforeSuite(func() {
 	packageInstallNamespace = os.Getenv("PACKAGE_INSTALL_NAMESPACE")
 	if packageInstallNamespace == "" {
 		packageInstallNamespace = "e2e-external-dns-package"
-		fmt.Fprintf(GinkgoWriter, "Info: PACKAGE_INSTALL_NAMESPACE is not set. Package will be installed to an ephmeral namespace: %s.\n", packageInstallNamespace)
+		GinkgoWriter.Printf("Info: PACKAGE_INSTALL_NAMESPACE is not set. Package will be installed to an ephmeral namespace: %s.\n", packageInstallNamespace)
 		_, err := utils.Kubectl(nil, "create", "namespace", packageInstallNamespace)
 		Expect(err).NotTo(HaveOccurred())
 	} else {
-		fmt.Fprintf(GinkgoWriter, "Info: PACKAGE_INSTALL_NAMESPACE is set to %s.\n", packageInstallNamespace)
+		GinkgoWriter.Printf("Info: PACKAGE_INSTALL_NAMESPACE is set to %s.\n", packageInstallNamespace)
 	}
 
 	_, err := utils.Kubectl(nil, "create", "namespace", fixtureNamespace)

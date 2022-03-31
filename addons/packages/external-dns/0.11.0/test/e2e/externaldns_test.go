@@ -6,13 +6,12 @@ package e2e_test
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"path/filepath"
 
-	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/utils"
+	"github.com/vmware-tanzu/community-edition/addons/packages/test/pkg/v2/utils"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
@@ -92,26 +91,26 @@ var _ = Describe("External-dns Addon E2E Test", func() {
 	})
 
 	JustAfterEach(func() {
-		if CurrentGinkgoTestDescription().Failed {
-			fmt.Fprintf(GinkgoWriter, "\nCollecting diagnostic information just after test failure\n")
-			fmt.Fprintf(GinkgoWriter, "\nResources summary:\n")
+		if CurrentSpecReport().Failed() {
+			GinkgoWriter.Printf("\nCollecting diagnostic information just after test failure\n")
+			GinkgoWriter.Printf("\nResources summary:\n")
 			_, _ = utils.Kubectl(nil, "-n", packageInstallNamespace, "get", "all,packageinstalls,apps")
 			_, _ = utils.Kubectl(nil, "-n", packageComponentsNamespace, "get", "all")
 			_, _ = utils.Kubectl(nil, "-n", fixtureNamespace, "get", "all")
 
-			fmt.Fprintf(GinkgoWriter, "\nbind deployment status:\n")
+			GinkgoWriter.Printf("\nbind deployment status:\n")
 			_, _ = utils.Kubectl(nil, "-n", fixtureNamespace, "get", "deployment", "bind", "-o", "jsonpath={.status}")
 
-			fmt.Fprintf(GinkgoWriter, "\nkuard deployment status:\n")
+			GinkgoWriter.Printf("\nkuard deployment status:\n")
 			_, _ = utils.Kubectl(nil, "-n", fixtureNamespace, "get", "deployment", "kuard", "-o", "jsonpath={.status}")
 
-			fmt.Fprintf(GinkgoWriter, "\npackage install status:\n")
+			GinkgoWriter.Printf("\npackage install status:\n")
 			_, _ = utils.Kubectl(nil, "-n", packageInstallNamespace, "get", "app", packageInstallName, "-o", "jsonpath={.status}")
 
-			fmt.Fprintf(GinkgoWriter, "\npackage components status:\n")
+			GinkgoWriter.Printf("\npackage components status:\n")
 			_, _ = utils.Kubectl(nil, "-n", packageComponentsNamespace, "get", "deployment", "external-dns", "-o", "jsonpath={.status}")
 
-			fmt.Fprintf(GinkgoWriter, "\nexternal-dns logs:\n")
+			GinkgoWriter.Printf("\nexternal-dns logs:\n")
 			_, _ = utils.Kubectl(nil, "-n", packageComponentsNamespace, "logs", "-l", "app=external-dns")
 		}
 	})
